@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".infomation_Contact">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="158dp"
+            android:src="@drawable/background" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:text="0334590019"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:text="Nguyễn Thành "/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_marginTop="200dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="91dp"
+            android:text="Nhắn Tin"
+            android:drawableTop="@drawable/sasa" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="91dp"
+            android:layout_marginLeft="10dp"
+            android:text="Gọi Điện"
+            android:drawableTop="@drawable/phone" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="91dp"
+            android:layout_marginLeft="10dp"
+
+            android:text="Call Video"
+            android:drawableTop="@drawable/video" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="91dp"
+            android:layout_marginLeft="10dp"
+
+            android:text="Gmail"
+            android:drawableTop="@drawable/gmail" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:background="@drawable/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:text="ZALO" />
+
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:padding="10dp"
+            android:background="@drawable/button4"
+            android:textColor="@color/white"
+            android:text="Lịch Sử Cuộc" />
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@drawable/button4"
+            android:textColor="@color/white"
+            android:layout_margin="30dp"
+            android:text="Xóa Người Gọi Này" />
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button4"
+            android:text="Thêm Vào Danh Sách Yêu  Thích" />
+    </LinearLayout>
+</FrameLayout>
