@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.Manifest;
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import kotlinx.android.synthetic.main.fragment_2.addContact
@@ -27,13 +30,26 @@ private const val ARG_PARAM2 = "param2"
 
 class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
     //
+    private var contactListListener: ContactListListener? = null
+    interface ContactListListener {
+        fun listContacts()
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ContactListListener) {
+            contactListListener = context
+        } else {
+            throw RuntimeException("$context must implement ContactListListener")
+        }
+    }
+
     private lateinit var spinner: Spinner
     //
     private lateinit var contactsRecyclerView: RecyclerView
     private lateinit var contactsAdapter: ContactsAdapter
     val fragment1 = Fragment1()
 
-    private val REQUEST_CODE = 1
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,8 +65,7 @@ class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
 
 
         contactsAdapter = ContactsAdapter(requireContext())
-        val s = contactsAdapter.setOnEditButtonClickListener(this)
-        Log.d("TAG", "$s")
+         contactsAdapter.setOnEditButtonClickListener(this)
 
         val spinnerData = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")
 
@@ -120,23 +135,9 @@ class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
     }
 
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Nếu quyền đã được cấp, truy vấn danh bạ
-                listContacts()
-            } else {
-                // Nếu quyền bị từ chối, xử lý tương ứng (hiển thị thông báo hoặc vô hiệu hóa chức năng)
-            }
-        }
-    }
 
-    private fun listContacts() {
+
+    internal fun listContacts() {
         val contacts: MutableList<Contact> = mutableListOf()
 
         // Truy vấn danh bạ thông qua ContentProvider
@@ -150,12 +151,13 @@ class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
 
         cursor?.use {
             while (cursor.moveToNext()) {
-                val id: String = it.getString(it.getColumnIndex(ContactsContract.Contacts._ID) + 0)
+                val id: Int = it.getInt(it.getColumnIndex(ContactsContract.Contacts._ID) + 0)
                 val name: String =
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME) + 1 )
                 val phoneNumber: String =
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)  + 0)
                 val contact = Contact(id,name, phoneNumber)
+                Log.d("id khi lay", "$id")
                 contacts.add(contact)
             }
         }
@@ -169,7 +171,7 @@ class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
 
         // Truyền dữ liệu liên hệ sang Fragment1
         val bundle = Bundle()
-        bundle.putString("contactId", contact.id)
+        bundle.putInt("contactId", contact.id)
         bundle.putString("contactName", contact.name)
         bundle.putString("contactPhoneNumber", contact.phoneNumber)
         fragment1.arguments = bundle
@@ -177,6 +179,23 @@ class Fragment2 : Fragment(), ContactsAdapter.OnEditButtonClickListener {
         // Chuyển đổi Fragment1
         moveToFragment(fragment1)
 
+    }
+    override fun deleteContactFromFragment(contactId: Int) {
+        val contactIds = contactId
+        val context: Context = requireContext()
+        val resolver: ContentResolver = context.contentResolver
+        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
+
+        // Xóa các thông tin liên quan đến liên hệ
+        resolver.delete(uri, null, null)
+
+        // Xóa liên hệ từ danh bạ
+        val selection = "${ContactsContract.RawContacts._ID} = ?"
+        val selectionArgs = arrayOf(contactIds.toString())
+        resolver.delete(ContactsContract.RawContacts.CONTENT_URI, selection, selectionArgs)
+
+        // Cập nhật lại giao diện người dùng (nếu cần)
+        contactsAdapter.notifyDataSetChanged()
     }
 
 }

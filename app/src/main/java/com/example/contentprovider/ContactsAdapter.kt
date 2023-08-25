@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 class ContactsAdapter(private val context: Context) : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
     private val contacts: MutableList<Contact> = mutableListOf()
     private var editButtonClickListener: OnEditButtonClickListener? = null
+    private var deleteButtonClickListener: OnEditButtonClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.custom_item, parent, false)
@@ -39,15 +40,26 @@ class ContactsAdapter(private val context: Context) : RecyclerView.Adapter<Conta
 
     fun setOnEditButtonClickListener(listener: OnEditButtonClickListener) {
         editButtonClickListener = listener
+        deleteButtonClickListener = listener
     }
+
+    fun addContact(contact: Contact) {
+        contacts.add(contact)
+        contacts.forEach {
+            Log.d("ContactsAdapter", "Name: ${it.name}, Phone: ${it.phoneNumber}")
+        }
+        notifyDataSetChanged()
+    }
+
 
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textName: TextView = itemView.findViewById(R.id.textName)
         private val textPhoneNumber: TextView = itemView.findViewById(R.id.textPhoneNumber)
         private val editButton: Button = itemView.findViewById(R.id.edt)
+        private val delete: Button = itemView.findViewById(R.id.delete)
 
         fun bind(contact: Contact) {
-            textName.text = contact.name
+            textName.text = contact.id.toString()
             textPhoneNumber.text = contact.phoneNumber
 
             editButton.setOnClickListener {
@@ -58,11 +70,20 @@ class ContactsAdapter(private val context: Context) : RecyclerView.Adapter<Conta
                     editButtonClickListener?.onEditButtonClick(selectedContact)
                 }
             }
+            delete.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val selectedContact = contacts[position]
+                    Log.d("id khi xoa", selectedContact.id.toString())
+                    deleteButtonClickListener?.deleteContactFromFragment(selectedContact.id)
+                }
+            }
         }
     }
 
     interface OnEditButtonClickListener {
         fun onEditButtonClick(contact: Contact)
+        fun deleteContactFromFragment(id: Int)
     }
 }
 

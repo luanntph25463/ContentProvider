@@ -1,3 +1,3 @@
 package com.example.contentprovider
 
-data class Contact(val id: String, val name: String, val phoneNumber: String)
+data class Contact(val id: Int, val name: String, val phoneNumber: String)

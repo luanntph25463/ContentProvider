@@ -3,15 +3,22 @@ package com.example.contentprovider
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.my_draw_layout
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Fragment2.ContactListListener {
     lateinit var my_draw_layout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+    private var contactListListener: Fragment2.ContactListListener? = null
+    private val REQUEST_CODE = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val permission = Manifest.permission.WRITE_CONTACTS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         my_draw_layout = findViewById<DrawerLayout>(R.id.my_draw_layout)
@@ -63,6 +70,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Gọi phương thức listContacts() trong Fragment thông qua ContactListListener
+                contactListListener?.listContacts()
+            } else {
+                // Xử lý quyền bị từ chối
+            }
+        }
+    }
+    override fun listContacts() {
+        // Gọi phương thức listContacts() trong Fragment tương ứng
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? Fragment2
+        fragment?.listContacts()
     }
     override  fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
