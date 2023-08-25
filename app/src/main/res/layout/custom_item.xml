@@ -16,14 +16,14 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/contactName"
+            android:id="@+id/textName"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView" />
 
         <EditText
-            android:id="@+id/contactNumber"
+            android:id="@+id/textPhoneNumber"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -36,13 +36,15 @@
         android:layout_marginTop="5dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView9"
+        <Button
+            android:id="@+id/edt"
             android:layout_width="80dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
             android:drawableTop="@drawable/edit" />
 
-        <TextView
+        <Button
             android:id="@+id/textView10"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
